@@ -21,6 +21,10 @@ export class ProductsService {
     return this.productModel.find().skip(offset).limit(limit).sort(sortProperty).exec();
   }
 
+  count(): Promise<number> {
+    return this.productModel.countDocuments().exec();
+  }
+
   async find(id: string): Promise<Product> {
     if (!isValidObjectId(id)) throw new NotFoundException('Product not found');
 

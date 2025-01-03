@@ -1,5 +1,6 @@
 import { IsString, IsNumber } from 'class-validator';
 import { Expose } from 'class-transformer';
+import { PaginationResponseDto } from 'src/common/dto/pagination.dto';
 
 export class ProductFieldsDto {
   @IsString()
@@ -20,3 +21,8 @@ export class ProductDto extends ProductFieldsDto {
 export class CreateProductDto extends ProductFieldsDto {}
 
 export class UpdateProductDto extends ProductFieldsDto {}
+
+export class ProductWithPaginationDto {
+  products: ProductDto[];
+  pagination: PaginationResponseDto;
+}
