@@ -13,9 +13,17 @@ export class ReviewsService {
   async search(productId: string, pagination: PaginationDto): Promise<Review[]> {
     const { limit, page, sort } = pagination;
     const offset = (page - 1) * limit;
-    const sortProperty = parseSortField(sort, ['createdAt', 'rating']);
 
-    return this.reviewModel.find({ productId }).skip(offset).limit(limit).sort(sortProperty).exec();
+    let result;
+
+    result = this.reviewModel.find({ productId }).skip(offset).limit(limit);
+
+    if (sort) {
+      const sortProperty = parseSortField(sort, ['createdAt', 'rating']);
+      result = result.sort(sortProperty);
+    }
+
+    return result.exec();
   }
 
   async update(id: string, params: UpdateReviewDto): Promise<Review> {

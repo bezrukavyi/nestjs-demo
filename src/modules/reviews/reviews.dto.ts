@@ -4,18 +4,18 @@ import { Expose } from 'class-transformer';
 export class ReviewFieldsDto {
   @Expose()
   @IsString()
-  readonly message: string;
+  readonly message: string = '';
 }
 
 export class ReviewDto extends ReviewFieldsDto {
   @Expose()
   @IsDateString()
-  readonly createdAt: Date;
+  readonly createdAt!: Date; // Definite assignment assertion
 }
 
 export class CreateReviewDto extends ReviewFieldsDto {
   @IsString()
-  productId: string;
+  productId!: string;
 }
 
 export class UpdateReviewDto extends ReviewFieldsDto {}
