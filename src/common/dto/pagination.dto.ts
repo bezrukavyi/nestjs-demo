@@ -34,11 +34,16 @@ export class PaginationDto {
   sort?: string;
 }
 
+export class PaginationResponseDto extends PaginationDto {
+  @IsInt()
+  totalCount: number = 0;
+}
+
 export const parseSortField = (sortField: string | string[], whiteList: string[] = []) => {
-  const parseField = (field) => {
+  const parseField = (field: any) => {
     return field
       ? field.split(',').reduce(
-          (acc, sortItem) => {
+          (acc: any, sortItem: any) => {
             const [field, order] = sortItem.split(':');
             if (!whiteList.includes(field)) {
               return acc;

@@ -35,7 +35,7 @@ export function PermissionsGuard(requiredPermission: PermissionType): Type<CanAc
       let decoded: TokenPayload;
 
       try {
-        decoded = this.JwtService.verifyToken(token);
+        decoded = this.JwtService.verifyToken(token) as TokenPayload;
       } catch (error) {
         throw new UnauthorizedException('Invalid token');
       }

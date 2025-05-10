@@ -16,9 +16,21 @@ export class ProductsService {
   search(pagination: PaginationDto): Promise<any[]> {
     const { limit, page, sort } = pagination;
     const offset = (page - 1) * limit;
-    const sortProperty = parseSortField(sort, ['name', 'price']);
 
-    return this.productModel.find().skip(offset).limit(limit).sort(sortProperty).exec();
+    let result;
+
+    result = this.productModel.find().skip(offset).limit(limit);
+
+    if (sort) {
+      const sortProperty = parseSortField(sort, ['name', 'price']);
+      result = result.sort(sortProperty);
+    }
+
+    return result.exec();
+  }
+
+  count(): Promise<number> {
+    return this.productModel.countDocuments().exec();
   }
 
   async find(id: string): Promise<Product> {

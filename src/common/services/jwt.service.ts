@@ -20,7 +20,7 @@ export class JwtService {
     });
   }
 
-  verifyToken(token: string): JwtPayload | null {
+  verifyToken(token: string): JwtPayload | string {
     const publicKey = this.configService.get<string>('JWT_PUBLIC_KEY');
 
     if (!publicKey) {

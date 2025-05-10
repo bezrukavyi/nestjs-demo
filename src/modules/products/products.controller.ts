@@ -1,13 +1,14 @@
 import { Controller, Get, Post, Patch, Delete } from '@nestjs/common';
-import { Body, Param, Query } from '@nestjs/common';
+import { Body, Param, Query, ParseIntPipe } from '@nestjs/common';
 import { CatchDatabaseValidationError } from 'src/common/decorators/CatchDatabaseValidationError.decorator';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { Permissions } from 'src/common/decorators/Permissions.decorator';
-import { ProductDto, CreateProductDto, UpdateProductDto } from './products.dto';
+import { ProductWithPaginationDto, CreateProductDto, UpdateProductDto } from './products.dto';
 import { ProductsService } from './products.service';
 import { Product } from './products.model';
 import { plainToInstance } from 'class-transformer';
 import { ApiTags } from '@nestjs/swagger';
+import { ProductDto } from './products.dto';
 import {
   ApiProductOperation,
   ApiProductsListOperation,
@@ -24,17 +25,24 @@ export class ProductsController {
   @Get()
   @Permissions('readOnly')
   @ApiProductsListOperation('List all products', 'Retrieves a list of all products', ProductDto)
-  async index(@Query() pagination: PaginationDto): Promise<ProductDto[]> {
+  async index(@Query() pagination: PaginationDto): Promise<ProductWithPaginationDto> {
     const products = await this.productsService.search(pagination);
+    const productsCount = await this.productsService.count();
 
-    return products.map((product) => this.serialize(product));
+    return {
+      products: products.map((product) => this.serialize(product)),
+      pagination: {
+        ...pagination,
+        totalCount: productsCount,
+      },
+    };
   }
 
   @Get(':id')
   @Permissions('readOnly')
   @ApiProductOperation('Get a product by ID', 'Retrieves a product by its ID', ProductDto)
   @ApiProductParam()
-  async show(@Param('id') id: string): Promise<ProductDto> {
+  async show(@Param('id', ParseIntPipe) id: string): Promise<ProductDto> {
     return this.serialize(await this.productsService.find(id));
   }
 
